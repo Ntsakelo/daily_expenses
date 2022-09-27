@@ -10,7 +10,11 @@
       <div class="head">
         <h1>Expenses for {{name}}</h1>
       </div>
-      <h5 class="expenseHead">Weekly expenses</h5>
+      {{#if filterNum}}
+        <h5 class="expenseHead">{{filterNum}} days expenses</h5>
+      {{else}}
+        <h5 class="expenseHead">Weekly expenses</h5>
+      {{/if}}
       <div class="expenses">
         <ul class="expensesList">
           {{#each userExpenses}}
@@ -19,13 +23,37 @@
                 <p>{{this.category}}</p>
               </div>
               <div class="expenseAmount">
-                <p>{{this.amount}}</p>
+                <p>R{{this.amount}}</p>
               </div>
 
             </li>
           {{/each}}
         </ul>
       </div>
+
+      <div class="filter">
+        <form action="/filter" method="post">
+          <input
+            type="number"
+            name="daysNo"
+            placeholder="Enter number of days"
+            class="noFilter"
+          />
+          <button class="enterBtn">Filter</button>
+        </form>
+      </div>
+      <div class="expenseTotals">
+        {{#each totalList}}
+          <div class="travelTotal categoryTot">
+            <p>{{this.category}}</p>
+            <p>R{{this.sum}}</p>
+          </div>
+        {{/each}}
+        <form action="/totals" method="post">
+          <button class="enterBtn">Calculate</button>
+        </form>
+      </div>
+
     </div>
   </body>
 </html>

@@ -53,6 +53,8 @@ app.post("/login", expensesRoutes.login);
 app.get("/addExpenses/:name", expensesRoutes.expenses);
 app.post("/addExpenses/:name", expensesRoutes.addExpense);
 app.get("/viewExpenses", expensesRoutes.viewExpenses);
+app.post("/filter", expensesRoutes.filterData);
+app.post("/totals", expensesRoutes.getTotals);
 var PORT = process.env.PORT || 3045;
 
 app.listen(PORT, function () {

@@ -37,18 +37,34 @@ export default function ExpensesRoutes(ExpensesData) {
       let category = req.body.category;
       let date = req.body.date;
       let amount = req.body.amount;
-
+      if (!name || !category || !date || !amount) {
+        res.redirect("/addExpenses/" + name);
+      }
       await ExpensesData.storeExpense(name, category, Number(amount), date);
       res.redirect("/addExpenses/" + name);
     } catch (err) {
       next(err);
     }
   }
+  let num = 0;
+  async function filterData(req, res, next) {
+    let numOfDays = req.body.daysNo;
+    num = numOfDays;
+    res.redirect("/viewExpenses");
+  }
+  let totals = [];
+  async function getTotals(req, res, next) {
+    let results = await ExpensesData.calcTotals(username, num);
+    totals = results;
+    res.redirect("/viewExpenses");
+  }
   async function viewExpenses(req, res, next) {
     try {
       res.render("viewExpenses", {
         name: username,
-        userExpenses: await ExpensesData.userExpenses(username),
+        userExpenses: await ExpensesData.userExpenses(username, Number(num)),
+        filterNum: num,
+        totalList: totals,
       });
     } catch (err) {
       next(err);
@@ -60,5 +76,7 @@ export default function ExpensesRoutes(ExpensesData) {
     expenses,
     addExpense,
     viewExpenses,
+    filterData,
+    getTotals,
   };
 }

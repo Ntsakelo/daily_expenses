@@ -64,15 +64,43 @@ export default function ExpensesData(db) {
       console.log(err);
     }
   }
-  async function userExpenses(user) {
+
+  async function userExpenses(user, num) {
     try {
       let userId = await getUserId(user);
       let results = await db.manyOrNone(
         "select firstname,category,amount,expensedate from users join expenses on users.id = expenses.userid join categories on categories.id = expenses.categoryid where expenses.userid = $1",
         [userId]
       );
+      let items = [];
+      results.forEach((item) => {
+        let numOfDays = 7;
+        if (num > 0) {
+          numOfDays = num;
+        }
+        let date = item.expensedate;
+        let expenseDay = date.getDate();
+        let newDate = new Date();
+        let currentDay = newDate.getDate();
+        let dateDiff = currentDay - numOfDays;
+        if (expenseDay >= dateDiff && expenseDay <= currentDay) {
+          items.push(item);
+        }
+      });
 
-      console.log(dateItems);
+      return items;
+    } catch (err) {
+      console.log(err);
+    }
+  }
+  async function calcTotals(user) {
+    try {
+      let userId = await getUserId(user);
+      let results = await db.manyOrNone(
+        "select categoryid,category, SUM(amount) from expenses join categories on categories.id = expenses.categoryid where userid = $1 group by categoryid,category;",
+        [userId]
+      );
+
       return results;
     } catch (err) {
       console.log(err);
@@ -83,5 +111,6 @@ export default function ExpensesData(db) {
     storeName,
     storeExpense,
     userExpenses,
+    calcTotals,
   };
 }

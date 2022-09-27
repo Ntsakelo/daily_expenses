@@ -100,7 +100,7 @@ a {
   cursor: pointer;
 }
 #expensesDisplay {
-  height: 100vh;
+  height: 900px;
 }
 .expenseHead {
   color: silver;
@@ -117,13 +117,48 @@ li {
   width: 100%;
 }
 .expensesList {
-  margin: auto;
+  margin: 0;
+  padding: 0;
 }
 .category {
   display: inline-block;
 }
 .expenseAmount {
   display: inline-block;
+}
+.noFilter {
+  height: 30px;
+  display: block;
+  margin: auto;
+
+  margin-top: 20px;
+  background-color: rgb(58, 58, 58);
+  border: none;
+  border-radius: 15px;
+  box-shadow: 5px 5px 5px 5px rgb(37, 37, 37);
+  outline: none;
+  color: rgb(52, 210, 210);
+}
+.noFilter::placeholder {
+  color: rgb(52, 210, 210);
+}
+.expenseTotals {
+  margin-top: 30px;
+}
+.expenseTotals div {
+  width: 150px;
+  height: 50px;
+  /* border: 1px solid red; */
+  display: block;
+  margin: auto;
+  margin-bottom: 10px;
+  background-color: rgb(58, 58, 58);
+  box-shadow: 5px 5px 5px 5px rgb(37, 37, 37);
+}
+.categoryTot p {
+  color: silver;
+  margin: 0px;
+  padding: 0;
 }
 @media screen and (max-width: 420px) {
   .amount::placeholder {
@@ -134,5 +169,15 @@ li {
   }
   optgroup {
     font-size: 20px;
+  }
+}
+@media screen and (min-width: 720px) {
+  .expenseTotals {
+    text-align: center;
+    margin-top: 30px;
+  }
+  .expenseTotals div {
+    display: inline-block;
+    width: 200px;
   }
 }
