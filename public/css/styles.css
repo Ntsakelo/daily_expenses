@@ -43,7 +43,7 @@ form {
   display: block;
   margin: auto;
   width: 165px;
-  margin-bottom: 20px;
+  margin-top: 20px;
   background-color: rgb(58, 58, 58);
   border: none;
   border-radius: 15px;
@@ -51,8 +51,8 @@ form {
   color: rgb(52, 210, 210);
   outline: none;
 }
-.date::after {
-  color: red;
+::-webkit-calendar-picker-indicator {
+  filter: invert(0.5);
 }
 .amount {
   height: 30px;
@@ -79,10 +79,29 @@ form {
   border-radius: 15px;
   border: none;
 }
+.viewBtn {
+  display: block;
+  margin: auto;
+  width: 170px;
+  height: 30px;
+  margin-top: 30px;
+  color: white;
+  background-color: rgb(52, 210, 210);
+  border-radius: 15px;
+  border: none;
+}
+.viewBtn:hover {
+  cursor: pointer;
+}
+a {
+  text-decoration: none;
+}
 .enterBtn:hover {
   cursor: pointer;
 }
-
+.expenses {
+  color: silver;
+}
 @media screen and (max-width: 420px) {
   .amount::placeholder {
     font-size: 20px;

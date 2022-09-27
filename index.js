@@ -49,7 +49,10 @@ const expensesData = ExpensesData(db);
 const expensesRoutes = ExpensesRoutes(expensesData);
 
 app.get("/", expensesRoutes.home);
-app.post("/addExpense", expensesRoutes.addExpense);
+app.post("/login", expensesRoutes.login);
+app.get("/addExpenses/:name", expensesRoutes.expenses);
+app.post("/addExpenses/:name", expensesRoutes.addExpense);
+app.get("/viewExpenses", expensesRoutes.viewExpenses);
 var PORT = process.env.PORT || 3045;
 
 app.listen(PORT, function () {

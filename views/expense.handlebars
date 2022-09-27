@@ -1,0 +1,30 @@
+<div class="addExpenses">
+  <div class="head">
+    <h1>ENTER EXPENSES</h1>
+  </div>
+  <div class="error">
+    <p class="errorText"></p>
+  </div>
+  <form action="/addExpenses/{{name}}" method="POST">
+
+    <div class="dropdown">
+      <select name="category" id="category">
+        <optgroup>
+          <option value="">Select category</option>
+          {{#each catList}}
+            <option value="{{this.category}}">{{this.category}}</option>
+          {{/each}}
+        </optgroup>
+      </select>
+    </div>
+    <input
+      type="number"
+      name="amount"
+      placeholder="Enter amount(R)"
+      class="amount"
+    />
+    <input type="date" name="date" placeholder="date of expense" class="date" />
+    <button class="enterBtn" type="submit">Submit Expense</button>
+  </form>
+  <a href="/viewExpenses"><button class="viewBtn" type="submit">View Expenses</button></a>
+</div>

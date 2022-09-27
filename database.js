@@ -64,7 +64,7 @@ export default function ExpensesData(db) {
       );
       let id = nameId.id;
       let catId = categoryId.id;
-      console.log(categoryId);
+
       await db.none(
         "insert into expenses(userid,categoryid,amount,expensedate) values ($1,$2,$3,$4)",
         [id, catId, amount, date]
@@ -73,6 +73,8 @@ export default function ExpensesData(db) {
       console.log(err);
     }
   }
+  //show expense for the past 7 days
+
   return {
     getCategories,
     storeName,
