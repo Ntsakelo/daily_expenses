@@ -1,0 +1,96 @@
+@import url("https://fonts.googleapis.com/css2?family=Montserrat:wght@100&display=swap");
+.addExpenses {
+  font-family: "Montserrat", sans-serif;
+  border: 1px solid grey;
+  height: 370px;
+  background-color: rgb(58, 58, 58);
+}
+.head {
+  text-align: center;
+  color: silver;
+}
+form {
+  text-align: center;
+}
+.name {
+  height: 30px;
+  display: block;
+  margin: auto;
+  margin-bottom: 20px;
+  background-color: rgb(58, 58, 58);
+  border: none;
+  border-radius: 15px;
+  box-shadow: 5px 5px 5px 5px rgb(37, 37, 37);
+  outline: none;
+  color: rgb(52, 210, 210);
+}
+.name::placeholder {
+  color: rgb(52, 210, 210);
+}
+
+#category {
+  height: 30px;
+  width: 170px;
+  margin-bottom: 20px;
+  background-color: rgb(58, 58, 58);
+  border: none;
+  border-radius: 15px;
+  box-shadow: 5px 5px 5px 5px rgb(37, 37, 37);
+  color: rgb(52, 210, 210);
+}
+.date {
+  height: 30px;
+  display: block;
+  margin: auto;
+  width: 165px;
+  margin-bottom: 20px;
+  background-color: rgb(58, 58, 58);
+  border: none;
+  border-radius: 15px;
+  box-shadow: 5px 5px 5px 5px rgb(37, 37, 37);
+  color: rgb(52, 210, 210);
+  outline: none;
+}
+.date::after {
+  color: red;
+}
+.amount {
+  height: 30px;
+  display: block;
+  margin: auto;
+  background-color: rgb(58, 58, 58);
+  border: none;
+  border-radius: 15px;
+  box-shadow: 5px 5px 5px 5px rgb(37, 37, 37);
+  outline: none;
+  color: rgb(52, 210, 210);
+}
+.amount::placeholder {
+  color: rgb(52, 210, 210);
+}
+.enterBtn {
+  display: block;
+  margin: auto;
+  width: 170px;
+  height: 30px;
+  margin-top: 30px;
+  color: white;
+  background-color: rgb(52, 210, 210);
+  border-radius: 15px;
+  border: none;
+}
+.enterBtn:hover {
+  cursor: pointer;
+}
+
+@media screen and (max-width: 420px) {
+  .amount::placeholder {
+    font-size: 20px;
+  }
+  .name::placeholder {
+    font-size: 20px;
+  }
+  optgroup {
+    font-size: 20px;
+  }
+}

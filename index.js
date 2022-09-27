@@ -48,9 +48,9 @@ app.use(express.static("public"));
 const expensesData = ExpensesData(db);
 const expensesRoutes = ExpensesRoutes(expensesData);
 
-app.get("/");
-
-var PORT = process.env.PORT || 6000;
+app.get("/", expensesRoutes.home);
+app.post("/addExpense", expensesRoutes.addExpense);
+var PORT = process.env.PORT || 3045;
 
 app.listen(PORT, function () {
   console.log("app started at port: ", PORT);
