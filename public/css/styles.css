@@ -99,8 +99,31 @@ a {
 .enterBtn:hover {
   cursor: pointer;
 }
+#expensesDisplay {
+  height: 100vh;
+}
+.expenseHead {
+  color: silver;
+  text-align: center;
+}
+
 .expenses {
   color: silver;
+}
+li {
+  list-style-type: none;
+  text-align: center;
+  border-bottom: 1px solid silver;
+  width: 100%;
+}
+.expensesList {
+  margin: auto;
+}
+.category {
+  display: inline-block;
+}
+.expenseAmount {
+  display: inline-block;
 }
 @media screen and (max-width: 420px) {
   .amount::placeholder {

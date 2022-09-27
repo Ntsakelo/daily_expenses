@@ -6,22 +6,24 @@
     <title>View expenses</title>
   </head>
   <body>
-    <div class="addExpenses">
+    <div class="addExpenses" id="expensesDisplay">
       <div class="head">
         <h1>Expenses for {{name}}</h1>
-        <h5>Weekly expenses</h5>
       </div>
+      <h5 class="expenseHead">Weekly expenses</h5>
       <div class="expenses">
         <ul class="expensesList">
-          <li class="expense">
-            <div class="category">
-              <p>Groceries</p>
-            </div>
-            <div class="expenseAmount">
-              <p>R200</p>
-            </div>
+          {{#each userExpenses}}
+            <li class="expense">
+              <div class="category">
+                <p>{{this.category}}</p>
+              </div>
+              <div class="expenseAmount">
+                <p>{{this.amount}}</p>
+              </div>
 
-          </li>
+            </li>
+          {{/each}}
         </ul>
       </div>
     </div>

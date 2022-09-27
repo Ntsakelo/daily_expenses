@@ -48,6 +48,7 @@ export default function ExpensesRoutes(ExpensesData) {
     try {
       res.render("viewExpenses", {
         name: username,
+        userExpenses: await ExpensesData.userExpenses(username),
       });
     } catch (err) {
       next(err);

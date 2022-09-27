@@ -8,28 +8,7 @@ export default function ExpensesData(db) {
       console.log(err);
     }
   }
-  // async function getNameId(name) {
-  //   try {
-  //     let results = await db.oneOrNone(
-  //       "select firstname from users where firstname = $1",
-  //       [name]
-  //     );
-  //     console.log(results.firstname);
-  //     if (results.firstname === null) {
-  //       let id = 0;
-  //       return id;
-  //     } else if (results.firstname === name) {
-  //       let results = await db.oneOrNone(
-  //         "select id from users where firstname = $1",
-  //         [name]
-  //       );
-  //       console.log(results.id);
-  //       return results.id;
-  //     }
-  //   } catch (err) {
-  //     console.log(err);
-  //   }
-  // }
+
   async function getCategoryId(description) {
     try {
       return await db.oneOrNone(
@@ -74,10 +53,35 @@ export default function ExpensesData(db) {
     }
   }
   //show expense for the past 7 days
+  async function getUserId(user) {
+    try {
+      let results = await db.oneOrNone(
+        "select id from users where firstname = $1",
+        [user]
+      );
+      return results.id;
+    } catch (err) {
+      console.log(err);
+    }
+  }
+  async function userExpenses(user) {
+    try {
+      let userId = await getUserId(user);
+      let results = await db.manyOrNone(
+        "select firstname,category,amount,expensedate from users join expenses on users.id = expenses.userid join categories on categories.id = expenses.categoryid where expenses.userid = $1",
+        [userId]
+      );
 
+      console.log(dateItems);
+      return results;
+    } catch (err) {
+      console.log(err);
+    }
+  }
   return {
     getCategories,
     storeName,
     storeExpense,
+    userExpenses,
   };
 }
