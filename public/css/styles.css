@@ -160,6 +160,14 @@ li {
   margin: 0px;
   padding: 0;
 }
+.backLinks {
+  text-align: center;
+}
+.backLink {
+  color: rgb(195, 195, 195);
+  display: block;
+  margin-bottom: 5px;
+}
 @media screen and (max-width: 420px) {
   .amount::placeholder {
     font-size: 20px;
