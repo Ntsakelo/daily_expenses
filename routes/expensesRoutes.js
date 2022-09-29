@@ -22,10 +22,43 @@ export default function ExpensesRoutes(ExpensesData) {
   async function login(req, res, next) {
     try {
       let name = req.body.login;
+      let email = req.body.email;
       username = name;
-
-      await ExpensesData.storeName(name);
-      res.redirect("/addExpenses/" + name);
+      totals = [];
+      let results = await ExpensesData.checkName(name, email);
+      console.log(results);
+      if (results !== null) {
+        res.redirect("/addExpenses/" + name);
+      } else if (results === null) {
+        req.flash("login", "User not registered");
+        res.redirect("/");
+      }
+    } catch (err) {
+      next(err);
+    }
+  }
+  async function registerPage(req, res, next) {
+    try {
+      res.render("register");
+    } catch (err) {
+      next(err);
+    }
+  }
+  async function registerUser(req, res, next) {
+    try {
+      let firstName = req.body.regFirstName;
+      let lastName = req.body.regLstName;
+      let email = req.body.regEmail;
+      let results = await ExpensesData.checkName(firstName, email);
+      if (results !== null) {
+        req.flash("register", "User already exists");
+        res.redirect("/register");
+      }
+      if (results === null) {
+        await ExpensesData.storeName(firstName, lastName, email);
+        req.flash("register", "Successfully registered");
+        res.redirect("/register");
+      }
     } catch (err) {
       next(err);
     }
@@ -58,6 +91,12 @@ export default function ExpensesRoutes(ExpensesData) {
     totals = results;
     res.redirect("/viewExpenses");
   }
+  async function viewAllExpenses(req, res, next) {
+    res.render("overallView", {
+      name: username,
+      allExpenses: await ExpensesData.getAllExpenses(username),
+    });
+  }
   async function viewExpenses(req, res, next) {
     try {
       res.render("viewExpenses", {
@@ -76,7 +115,10 @@ export default function ExpensesRoutes(ExpensesData) {
     expenses,
     addExpense,
     viewExpenses,
+    viewAllExpenses,
     filterData,
     getTotals,
+    registerPage,
+    registerUser,
   };
 }

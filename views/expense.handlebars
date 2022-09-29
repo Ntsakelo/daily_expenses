@@ -1,4 +1,17 @@
 <div class="addExpenses">
+   <div class="addExpenses allExpenses">
+      <div class="navigation">
+        <a href="/addExpenses/{{name}}" class="nextLink"><button
+            class="navButton first"
+          >Add</button></a>
+        <a href="/allExpenses" class="nextLink"><button
+            class="navButton"
+          >Expenses</button></a>
+          <a href="/" class="nextLink"><button
+            class="navButton"
+          >Log out</button></a>
+
+      </div>
   <div class="head">
     <h1>ENTER EXPENSES</h1>
   </div>
@@ -26,5 +39,5 @@
     <input type="date" name="date" placeholder="date of expense" class="date" />
     <button class="enterBtn" type="submit">Submit Expense</button>
   </form>
-  <a href="/viewExpenses"><button class="viewBtn" type="submit">View Expenses</button></a>
+  <a href="/allExpenses"><button class="viewBtn" type="submit">View Expenses</button></a>
 </div>

@@ -1,0 +1,41 @@
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title></title>
+  </head>
+  <body>
+    <div class="addExpenses allExpenses">
+      <div class="navigation">
+        <a href="/addExpenses/{{name}}" class="nextLink"><button
+            class="navButton first"
+          >Add</button></a>
+        <a href="/allExpenses" class="nextLink"><button
+            class="navButton"
+          >Expenses</button></a>
+        <a href="/" class="nextLink"><button class="navButton">Log out</button></a>
+      </div>
+      <div class="expenses">
+        {{#if allExpenses}}
+          <table>
+            <th>Category</th>
+            <th>Amount</th>
+            <th>Date</th>
+            {{#each allExpenses}}
+              <tr>
+                <td>{{this.category}}</td>
+                <td>{{this.amount}}</td>
+                <td>{{this.expensedate}}</td>
+              </tr>
+            {{/each}}
+          </table>
+          <a href="/viewExpenses"><button class="enterBtn">View Periodical</button></a>
+          <a href="/categoryExpenses"><button class="enterBtn">View Categorized</button></a>
+        {{else}}
+          <p>No expenses entered</p>
+        {{/if}}
+      </div>
+    </div>
+  </body>
+</html>

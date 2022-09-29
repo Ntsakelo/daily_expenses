@@ -47,7 +47,6 @@ app.use(express.static("public"));
 
 const expensesData = ExpensesData(db);
 const expensesRoutes = ExpensesRoutes(expensesData);
-
 app.get("/", expensesRoutes.home);
 app.post("/login", expensesRoutes.login);
 app.get("/addExpenses/:name", expensesRoutes.expenses);
@@ -55,6 +54,9 @@ app.post("/addExpenses/:name", expensesRoutes.addExpense);
 app.get("/viewExpenses", expensesRoutes.viewExpenses);
 app.post("/filter", expensesRoutes.filterData);
 app.post("/totals", expensesRoutes.getTotals);
+app.get("/allExpenses", expensesRoutes.viewAllExpenses);
+app.get("/register", expensesRoutes.registerPage);
+app.post("/register", expensesRoutes.registerUser);
 var PORT = process.env.PORT || 3045;
 
 app.listen(PORT, function () {

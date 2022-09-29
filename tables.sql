@@ -1,6 +1,8 @@
 CREATE TABLE users (
     id serial primary key not null,
-    firstname text not null
+    firstname text not null,
+    lastname text not null,
+    email text not null
  
 );
 CREATE TABLE categories (

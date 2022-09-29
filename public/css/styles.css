@@ -2,7 +2,7 @@
 .addExpenses {
   font-family: "Montserrat", sans-serif;
   border: 1px solid grey;
-  height: 370px;
+  height: 450px;
   background-color: rgb(58, 58, 58);
 }
 .head {
@@ -11,6 +11,17 @@
 }
 form {
   text-align: center;
+}
+.messages {
+  height: 20px;
+  margin-bottom: 5px;
+}
+.errMsg {
+  text-align: center;
+  color: silver;
+}
+.register {
+  height: 400px;
 }
 .name {
   height: 30px;
@@ -36,6 +47,22 @@ form {
   border: none;
   border-radius: 15px;
   box-shadow: 5px 5px 5px 5px rgb(37, 37, 37);
+  color: rgb(52, 210, 210);
+}
+.email {
+  height: 30px;
+  display: block;
+  margin: auto;
+  width: 165px;
+  margin-top: 20px;
+  background-color: rgb(58, 58, 58);
+  border: none;
+  border-radius: 15px;
+  box-shadow: 5px 5px 5px 5px rgb(37, 37, 37);
+  color: rgb(52, 210, 210);
+  outline: none;
+}
+.email::placeholder {
   color: rgb(52, 210, 210);
 }
 .date {
@@ -155,6 +182,7 @@ li {
   background-color: rgb(58, 58, 58);
   box-shadow: 5px 5px 5px 5px rgb(37, 37, 37);
 }
+
 .categoryTot p {
   color: silver;
   margin: 0px;
@@ -168,6 +196,48 @@ li {
   display: block;
   margin-bottom: 5px;
 }
+.navigation {
+  text-align: center;
+  border-bottom: 1px solid silver;
+}
+.navButton {
+  width: 60px;
+  height: 60px;
+  margin: 0px;
+  padding: 0px;
+  border: none;
+  border: 1px solid silver;
+  background-color: rgb(58, 58, 58);
+  color: silver;
+}
+.first {
+  border-left: 1px solid silver;
+}
+.navButton:hover {
+  background-color: rgb(52, 210, 210);
+  color: white;
+  cursor: pointer;
+}
+.navButton:focus {
+  background-color: rgb(52, 210, 210);
+  color: white;
+}
+table {
+  color: silver;
+
+  margin: auto;
+  margin-top: 20px;
+  width: 70%;
+}
+tr {
+  text-align: center;
+}
+.expenses p {
+  text-align: center;
+}
+.allExpenses {
+  height: 100%;
+}
 @media screen and (max-width: 420px) {
   .amount::placeholder {
     font-size: 20px;
@@ -177,6 +247,14 @@ li {
   }
   optgroup {
     font-size: 20px;
+  }
+
+  .first {
+    border-left: 1px solid silver;
+  }
+  table {
+    width: 100%;
+    overflow-x: auto;
   }
 }
 @media screen and (min-width: 720px) {

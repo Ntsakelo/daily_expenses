@@ -19,35 +19,64 @@ export default function ExpensesData(db) {
       console.log(err);
     }
   }
-  async function storeName(name) {
+  async function storeName(firstname, lastname, email) {
     try {
       let results = await db.oneOrNone(
-        "select count(*) from users where firstname = $1",
-        [name]
+        "select count(*) from users where firstname = $1 and lastname = $2 and email = $3",
+        [firstname, lastname, email]
       );
       if (Number(results.count > 0)) {
         return;
       } else if (Number(results.count) <= 0) {
-        await db.none("insert into users(firstname) values($1)", [name]);
+        await db.none(
+          "insert into users(firstname,lastname,email) values($1,$2,$3)",
+          [firstname, lastname, email]
+        );
       }
+    } catch (err) {
+      console.log(err);
+    }
+  }
+  async function checkName(firstname, email) {
+    try {
+      let results = await db.oneOrNone(
+        "select id from users where firstname = $1 and email = $2",
+        [firstname, email]
+      );
+      return results;
     } catch (err) {
       console.log(err);
     }
   }
   async function storeExpense(name, description, amount, date) {
     try {
-      let categoryId = await getCategoryId(description);
-      let nameId = await db.oneOrNone(
-        "select id from users where firstname = $1",
-        [name]
-      );
-      let id = nameId.id;
-      let catId = categoryId.id;
+      if (name && description && amount && date) {
+        let categoryId = await getCategoryId(description);
+        let nameId = await db.oneOrNone(
+          "select id from users where firstname = $1",
+          [name]
+        );
+        let id = nameId.id;
+        let catId = categoryId.id;
 
-      await db.none(
-        "insert into expenses(userid,categoryid,amount,expensedate) values ($1,$2,$3,$4)",
-        [id, catId, amount, date]
+        await db.none(
+          "insert into expenses(userid,categoryid,amount,expensedate) values ($1,$2,$3,$4)",
+          [id, catId, amount, date]
+        );
+      }
+    } catch (err) {
+      console.log(err);
+    }
+  }
+  //show all expenses for a user;
+  async function getAllExpenses(user) {
+    try {
+      let userId = await getUserId(user);
+      let results = await db.manyOrNone(
+        "select firstname,category,amount,expensedate from users join expenses on users.id = expenses.userid join categories on categories.id = expenses.categoryid where expenses.userid = $1 order by expensedate desc",
+        [userId]
       );
+      return results;
     } catch (err) {
       console.log(err);
     }
@@ -81,13 +110,16 @@ export default function ExpensesData(db) {
         let date = item.expensedate;
         let expenseDay = date.getDate();
         let newDate = new Date();
-        let currentDay = newDate.getDate();
-        let dateDiff = currentDay - numOfDays;
-        if (expenseDay >= dateDiff && expenseDay <= currentDay) {
+        let dateDiff = newDate.setDate(newDate.getDate() - numOfDays);
+        let currentDate = new Date();
+        if (
+          date.getTime() >= dateDiff &&
+          date.getTime() <= currentDate.getTime()
+        ) {
           items.push(item);
         }
       });
-
+      console.log(items);
       return items;
     } catch (err) {
       console.log(err);
@@ -111,6 +143,8 @@ export default function ExpensesData(db) {
     storeName,
     storeExpense,
     userExpenses,
+    getAllExpenses,
     calcTotals,
+    checkName,
   };
 }

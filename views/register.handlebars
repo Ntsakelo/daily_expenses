@@ -1,0 +1,42 @@
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Register</title>
+  </head>
+  <body>
+    <div class="addExpenses register">
+
+      <div class="head regHead">
+        <h1>Register</h1>
+      </div>
+      <div class="messages">
+        <p class="errMsg">{{messages.register}}</p>
+
+      </div>
+      <form action="/register" method="post">
+        <input
+          type="text"
+          name="regFirstName"
+          class="name"
+          placeholder="Enter first name"
+        />
+        <input
+          type="text"
+          name="regLstName"
+          class="name"
+          placeholder="Enter last name"
+        />
+        <input
+          type="email"
+          name="regEmail"
+          class="name"
+          placeholder="Enter email address"
+        />
+        <button class="enterBtn">Register</button>
+      </form>
+      <a href="/"><button class="enterBtn">Log in</button></a>
+    </div>
+  </body>
+</html>

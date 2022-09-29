@@ -6,6 +6,19 @@
     <title>View expenses</title>
   </head>
   <body>
+     <div class="addExpenses allExpenses">
+      <div class="navigation">
+        <a href="/addExpenses/{{name}}" class="nextLink"><button
+            class="navButton first"
+          >Add</button></a>
+        <a href="/allExpenses" class="nextLink"><button
+            class="navButton"
+          >Expenses</button></a>
+          <a href="/" class="nextLink"><button
+            class="navButton"
+          >Log out</button></a>
+
+      </div>
     <div class="addExpenses" id="expensesDisplay">
       <div class="head">
         <h1>Expenses for {{name}}</h1>
@@ -53,10 +66,10 @@
           <button class="enterBtn">Calculate</button>
         </form>
       </div>
-      <div class="backLinks">
+      {{!-- <div class="backLinks">
         <a href="/addExpenses/{{name}}" class="backLink">Back to expenses</a>
-        <a href="/" class="backLink">Log out</a>
-      </div>
+       
+      </div> --}}
 
     </div>
   </body>
