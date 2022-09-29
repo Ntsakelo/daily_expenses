@@ -119,18 +119,21 @@ export default function ExpensesData(db) {
           items.push(item);
         }
       });
-      console.log(items);
+
       return items;
     } catch (err) {
       console.log(err);
     }
   }
-  async function calcTotals(user) {
+  async function calcTotals(user, numOfDays) {
     try {
+      let currentDate = new Date();
+      let newDate = new Date();
+      newDate.setDate(newDate.getDate() - numOfDays);
       let userId = await getUserId(user);
       let results = await db.manyOrNone(
-        "select categoryid,category, SUM(amount) from expenses join categories on categories.id = expenses.categoryid where userid = $1 group by categoryid,category;",
-        [userId]
+        "select categoryid,category, SUM(amount) from expenses join categories on categories.id = expenses.categoryid where userid = $1 and expensedate between $2 and $3 group by categoryid,category;",
+        [userId, newDate, currentDate]
       );
 
       return results;
