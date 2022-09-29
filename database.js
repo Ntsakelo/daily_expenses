@@ -127,6 +127,9 @@ export default function ExpensesData(db) {
   }
   async function calcTotals(user, numOfDays) {
     try {
+      if (!numOfDays) {
+        numOfDays = 7;
+      }
       let currentDate = new Date();
       let newDate = new Date();
       newDate.setDate(newDate.getDate() - numOfDays);

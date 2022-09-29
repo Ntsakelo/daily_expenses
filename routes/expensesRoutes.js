@@ -25,6 +25,7 @@ export default function ExpensesRoutes(ExpensesData) {
       let email = req.body.email;
       username = name;
       totals = [];
+      num = 0;
       let results = await ExpensesData.checkName(name, email);
       console.log(results);
       if (results !== null) {
