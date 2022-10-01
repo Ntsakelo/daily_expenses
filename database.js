@@ -73,7 +73,7 @@ export default function ExpensesData(db) {
     try {
       let userId = await getUserId(user);
       let results = await db.manyOrNone(
-        "select firstname,category,amount,expensedate from users join expenses on users.id = expenses.userid join categories on categories.id = expenses.categoryid where expenses.userid = $1 order by expensedate desc",
+        "select firstname,category,amount,to_char(expensedate,'DD/MM/YYYY') as expensedate from users join expenses on users.id = expenses.userid join categories on categories.id = expenses.categoryid where expenses.userid = $1 order by expensedate desc",
         [userId]
       );
       return results;
@@ -144,6 +144,16 @@ export default function ExpensesData(db) {
       console.log(err);
     }
   }
+  async function getWeeklyExpenses(user) {
+    try {
+      let userId = await getUserId(user);
+      let results = await db.manyOrNone(
+        "select firstname,category,amount,to_char(expensedate, 'DD/MM/YYYY'),extract(WEEK FROM expensedate) as week from expenses join categories on expenses.categoryid = categories.id join users on expenses.userid = users.id where users.id = 3;"
+      );
+    } catch (err) {
+      console.log(err);
+    }
+  }
   return {
     getCategories,
     storeName,
@@ -152,5 +162,6 @@ export default function ExpensesData(db) {
     getAllExpenses,
     calcTotals,
     checkName,
+    getWeeklyExpenses,
   };
 }

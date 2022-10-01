@@ -57,6 +57,7 @@ app.post("/totals", expensesRoutes.getTotals);
 app.get("/allExpenses", expensesRoutes.viewAllExpenses);
 app.get("/register", expensesRoutes.registerPage);
 app.post("/register", expensesRoutes.registerUser);
+app.get("/weeklyExpenses", expensesRoutes.viewWeeklyExpenses);
 var PORT = process.env.PORT || 3045;
 
 app.listen(PORT, function () {

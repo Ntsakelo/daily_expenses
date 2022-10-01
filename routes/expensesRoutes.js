@@ -1,6 +1,7 @@
 export default function ExpensesRoutes(ExpensesData) {
   let username;
   let firstname;
+  let daysArr = [];
   async function home(req, res, next) {
     try {
       res.render("index");
@@ -27,7 +28,7 @@ export default function ExpensesRoutes(ExpensesData) {
       totals = [];
       num = 0;
       let results = await ExpensesData.checkName(name, email);
-      console.log(results);
+
       if (results !== null) {
         res.redirect("/addExpenses/" + name);
       } else if (results === null) {
@@ -99,13 +100,33 @@ export default function ExpensesRoutes(ExpensesData) {
     });
   }
   async function viewExpenses(req, res, next) {
+    daysArr = [];
+    let upperRange = new Date();
+    let lowerRange = new Date();
+    if (num === 0) {
+      num = 7;
+    }
+    lowerRange.setDate(upperRange.getDate() - num);
+    let lowerFormat = `${lowerRange.getDate()}/${lowerRange.getMonth()}/${lowerRange.getFullYear()}`;
+    let upperFormat = `${upperRange.getDate()}/${upperRange.getMonth()}/${upperRange.getFullYear()}`;
+    let dates = { lowerFormat, upperFormat };
+
+    daysArr.push(dates);
     try {
       res.render("viewExpenses", {
         name: username,
         userExpenses: await ExpensesData.userExpenses(username, Number(num)),
         filterNum: num,
         totalList: totals,
+        days: daysArr,
       });
+    } catch (err) {
+      next(err);
+    }
+  }
+  async function viewWeeklyExpenses(req, res, next) {
+    try {
+      res.render("weekly");
     } catch (err) {
       next(err);
     }
@@ -121,5 +142,6 @@ export default function ExpensesRoutes(ExpensesData) {
     getTotals,
     registerPage,
     registerUser,
+    viewWeeklyExpenses,
   };
 }

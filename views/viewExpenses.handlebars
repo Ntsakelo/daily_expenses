@@ -22,12 +22,14 @@
     <div class="addExpenses" id="expensesDisplay">
       <div class="head">
         <h1>Expenses for {{name}}</h1>
+      
+         <p>Hi {{name}}, Below are your expenses for the past {{filterNum}} day(s)</p>
+     
       </div>
-      {{#if filterNum}}
-        <h5 class="expenseHead">{{filterNum}} days expenses</h5>
-      {{else}}
-        <h5 class="expenseHead">Weekly expenses</h5>
-      {{/if}}
+      {{#each days}}
+        <h5 class="expenseHead">expenses from {{this.lowerFormat}} to {{this.upperFormat}}</h5>
+      {{/each}}
+     
       <div class="expenses">
         <ul class="expensesList">
           {{#each userExpenses}}
