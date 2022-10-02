@@ -164,11 +164,11 @@ export default function ExpensesData(db) {
         let date = item.expensedate;
         let expenseDay = date.getDay();
         let expenseDate = date.getDate();
-        // const d = new Date();
-        // const date = d.getDate();
-        // const day = d.getDay();
+
         let weekOfMonth = Math.ceil((expenseDate - 1 - expenseDay) / 7);
-        // console.log(weekOfMonth);
+        if (weekOfMonth <= 0) {
+          weekOfMonth = 1;
+        }
         if (expenseDay === 0) {
           expenseProps = {
             day: "sunday",
