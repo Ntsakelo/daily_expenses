@@ -126,6 +126,7 @@ export default function ExpensesRoutes(ExpensesData) {
   }
   async function viewWeeklyExpenses(req, res, next) {
     try {
+      await ExpensesData.getWeeklyExpenses(username);
       res.render("weekly");
     } catch (err) {
       next(err);

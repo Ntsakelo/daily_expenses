@@ -147,9 +147,88 @@ export default function ExpensesData(db) {
   async function getWeeklyExpenses(user) {
     try {
       let userId = await getUserId(user);
+      // let upperDate = new Date();
+      // let lowerDate = new Date();
+      // lowerDate.setDate(lowerDate.getDate() - 28);
+      // let results = await db.manyOrNone(
+      //   "select firstname,category,amount,to_char(expensedate, 'DD/MM/YYYY'),extract(WEEK FROM expensedate) as week from expenses join categories on expenses.categoryid = categories.id join users on expenses.userid = users.id where users.id = $1 and expensedate between $2 and $3 ;",
+      //   [userId, lowerDate, upperDate]
+      // );
       let results = await db.manyOrNone(
-        "select firstname,category,amount,to_char(expensedate, 'DD/MM/YYYY'),extract(WEEK FROM expensedate) as week from expenses join categories on expenses.categoryid = categories.id join users on expenses.userid = users.id where users.id = 3;"
+        "select firstname,category,amount,expensedate from expenses join categories on expenses.categoryid = categories.id join users on expenses.userid = users.id where users.id = $1",
+        [userId]
       );
+      let expenseProps = {};
+      let expenseList = [];
+      results.forEach((item) => {
+        let date = item.expensedate;
+        let expenseDay = date.getDay();
+        let expenseDate = date.getDate();
+        // const d = new Date();
+        // const date = d.getDate();
+        // const day = d.getDay();
+        let weekOfMonth = Math.ceil((expenseDate - 1 - expenseDay) / 7);
+        // console.log(weekOfMonth);
+        if (expenseDay === 0) {
+          expenseProps = {
+            day: "sunday",
+            expDate: date,
+            category: item.category,
+            amount: item.amount,
+            weekNo: weekOfMonth,
+          };
+        } else if (expenseDay === 1) {
+          expenseProps = {
+            day: "monday",
+            expDate: date,
+            category: item.category,
+            amount: item.amount,
+            weekNo: weekOfMonth,
+          };
+        } else if (expenseDay === 2) {
+          expenseProps = {
+            day: "tuesday",
+            expDate: date,
+            category: item.category,
+            amount: item.amount,
+            weekNo: weekOfMonth,
+          };
+        } else if (expenseDay === 3) {
+          expenseProps = {
+            day: "wednesday",
+            expDate: date,
+            category: item.category,
+            amount: item.amount,
+            weekNo: weekOfMonth,
+          };
+        } else if (expenseDay === 4) {
+          expenseProps = {
+            day: "thursday",
+            expDate: date,
+            category: item.category,
+            amount: item.amount,
+            weekNo: weekOfMonth,
+          };
+        } else if (expenseDay === 5) {
+          expenseProps = {
+            day: "friday",
+            expDate: date,
+            category: item.category,
+            amount: item.amount,
+            weekNo: weekOfMonth,
+          };
+        } else if (expenseDay === 6) {
+          expenseProps = {
+            day: "saturday",
+            expDate: date,
+            category: item.category,
+            amount: item.amount,
+            weekNo: weekOfMonth,
+          };
+        }
+        expenseList.push(expenseProps);
+      });
+      console.log(expenseList);
     } catch (err) {
       console.log(err);
     }
