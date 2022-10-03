@@ -12,8 +12,11 @@
         <h1>Register</h1>
       </div>
       <div class="messages">
-        <p class="errMsg">{{messages.register}}</p>
-
+        {{#if code}}
+          <p class="code">Use code {{code}} to login</p>
+        {{else}}
+          <p class="errMsg">{{messages.register}}</p>
+        {{/if}}
       </div>
       <form action="/register" method="post">
         <input
@@ -21,19 +24,26 @@
           name="regFirstName"
           class="name"
           placeholder="Enter first name"
+          autocomplete="off"
+          required
         />
         <input
           type="text"
           name="regLstName"
           class="name"
           placeholder="Enter last name"
+          autocomplete="off"
+          required
         />
         <input
           type="email"
           name="regEmail"
           class="name"
           placeholder="Enter email address"
+          autocomplete="off"
+          required
         />
+
         <button class="enterBtn">Register</button>
       </form>
       <a href="/"><button class="enterBtn">Log in</button></a>

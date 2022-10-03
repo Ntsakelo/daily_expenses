@@ -6,7 +6,6 @@ import flash from "express-flash";
 import pgPromise from "pg-promise";
 import ExpensesRoutes from "./routes/expensesRoutes.js";
 import ExpensesData from "./database.js";
-// import Waiters from "./waiters.js";
 
 const pgp = pgPromise();
 
@@ -30,7 +29,7 @@ const app = express();
 
 app.use(
   session({
-    secret: "<add a secret string here>",
+    secret: "myOtherNameIs404",
     resave: false,
     saveUninitialized: true,
   })
@@ -47,8 +46,19 @@ app.use(express.static("public"));
 
 const expensesData = ExpensesData(db);
 const expensesRoutes = ExpensesRoutes(expensesData);
-app.get("/", expensesRoutes.home);
 app.post("/login", expensesRoutes.login);
+app.use(function (req, res, next) {
+  if (req.path === "/" || req.path === "/register") {
+    next();
+  } else {
+    if (!req.session.user) {
+      res.redirect("/");
+    } else if (req.session.user) {
+      next();
+    }
+  }
+});
+app.get("/", expensesRoutes.home);
 app.get("/addExpenses/:name", expensesRoutes.expenses);
 app.post("/addExpenses/:name", expensesRoutes.addExpense);
 app.get("/viewExpenses", expensesRoutes.viewExpenses);
@@ -58,6 +68,7 @@ app.get("/allExpenses", expensesRoutes.viewAllExpenses);
 app.get("/register", expensesRoutes.registerPage);
 app.post("/register", expensesRoutes.registerUser);
 app.get("/weeklyExpenses", expensesRoutes.viewWeeklyExpenses);
+app.get("/logout", expensesRoutes.logOut);
 var PORT = process.env.PORT || 3045;
 
 app.listen(PORT, function () {

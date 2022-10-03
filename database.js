@@ -19,18 +19,18 @@ export default function ExpensesData(db) {
       console.log(err);
     }
   }
-  async function storeName(firstname, lastname, email) {
+  async function storeName(firstname, lastname, email, code) {
     try {
       let results = await db.oneOrNone(
-        "select count(*) from users where firstname = $1 and lastname = $2 and email = $3",
-        [firstname, lastname, email]
+        "select count(*) from users where usercode = $1",
+        [code]
       );
       if (Number(results.count > 0)) {
         return;
       } else if (Number(results.count) <= 0) {
         await db.none(
-          "insert into users(firstname,lastname,email) values($1,$2,$3)",
-          [firstname, lastname, email]
+          "insert into users(firstname,lastname,email,usercode) values($1,$2,$3,$4)",
+          [firstname, lastname, email, code]
         );
       }
     } catch (err) {
@@ -40,8 +40,19 @@ export default function ExpensesData(db) {
   async function checkName(firstname, email) {
     try {
       let results = await db.oneOrNone(
-        "select id from users where firstname = $1 and email = $2",
+        "select * from users where firstname = $1 and email = $2",
         [firstname, email]
+      );
+      return results;
+    } catch (err) {
+      console.log(err);
+    }
+  }
+  async function checkCode(code) {
+    try {
+      let results = await db.oneOrNone(
+        "select * from users where usercode = $1",
+        [code]
       );
       return results;
     } catch (err) {
@@ -97,30 +108,19 @@ export default function ExpensesData(db) {
   async function userExpenses(user, num) {
     try {
       let userId = await getUserId(user);
+      let numOfDays = 7;
+      if (num > 0) {
+        numOfDays = num;
+      }
+      let upperDate = new Date();
+      let lowerDate = new Date();
+      lowerDate.setDate(lowerDate.getDay() - numOfDays);
       let results = await db.manyOrNone(
-        "select firstname,category,amount,expensedate from users join expenses on users.id = expenses.userid join categories on categories.id = expenses.categoryid where expenses.userid = $1",
-        [userId]
+        "select firstname,category,amount,expensedate from users join expenses on users.id = expenses.userid join categories on categories.id = expenses.categoryid where expenses.userid = $1 and expensedate between $2 and $3",
+        [userId, lowerDate, upperDate]
       );
-      let items = [];
-      results.forEach((item) => {
-        let numOfDays = 7;
-        if (num > 0) {
-          numOfDays = num;
-        }
-        let date = item.expensedate;
-        let expenseDay = date.getDate();
-        let newDate = new Date();
-        let dateDiff = newDate.setDate(newDate.getDate() - numOfDays);
-        let currentDate = new Date();
-        if (
-          date.getTime() >= dateDiff &&
-          date.getTime() <= currentDate.getTime()
-        ) {
-          items.push(item);
-        }
-      });
 
-      return items;
+      return results;
     } catch (err) {
       console.log(err);
     }
@@ -147,91 +147,87 @@ export default function ExpensesData(db) {
   async function getWeeklyExpenses(user) {
     try {
       let userId = await getUserId(user);
-      // let upperDate = new Date();
-      // let lowerDate = new Date();
-      // lowerDate.setDate(lowerDate.getDate() - 28);
+      let upperDate = new Date();
+      let lowerDate = new Date();
+      lowerDate.setDate(lowerDate.getDate() - 29);
+      let currentMonth = upperDate.getMonth() + 1;
+
+      let results = await db.manyOrNone(
+        "select userid,category,expensedate,amount from expenses join categories on expenses.categoryid = categories.id join users on expenses.userid = users.id where users.id = $1 and expensedate between $2 and $3 and extract(MONTH from expensedate) = $4",
+        [userId, lowerDate, upperDate, currentMonth]
+      );
       // let results = await db.manyOrNone(
-      //   "select firstname,category,amount,to_char(expensedate, 'DD/MM/YYYY'),extract(WEEK FROM expensedate) as week from expenses join categories on expenses.categoryid = categories.id join users on expenses.userid = users.id where users.id = $1 and expensedate between $2 and $3 ;",
+      //   "select userid,category,expensedate,amount from expenses join categories on expenses.categoryid = categories.id join users on expenses.userid = users.id where users.id = $1 and expensedate between $2 and $3 ",
       //   [userId, lowerDate, upperDate]
       // );
-      let results = await db.manyOrNone(
-        "select firstname,category,amount,expensedate from expenses join categories on expenses.categoryid = categories.id join users on expenses.userid = users.id where users.id = $1",
-        [userId]
-      );
+
       let expenseProps = {};
       let expenseList = [];
+      let week1 = [];
       results.forEach((item) => {
         let date = item.expensedate;
         let expenseDay = date.getDay();
         let expenseDate = date.getDate();
-
-        let weekOfMonth = Math.ceil((expenseDate - 1 - expenseDay) / 7);
-        if (weekOfMonth <= 0) {
-          weekOfMonth = 1;
-        }
-        if (expenseDay === 0) {
-          expenseProps = {
-            day: "sunday",
-            expDate: date,
-            category: item.category,
-            amount: item.amount,
-            weekNo: weekOfMonth,
-          };
-        } else if (expenseDay === 1) {
-          expenseProps = {
-            day: "monday",
-            expDate: date,
-            category: item.category,
-            amount: item.amount,
-            weekNo: weekOfMonth,
-          };
-        } else if (expenseDay === 2) {
-          expenseProps = {
-            day: "tuesday",
-            expDate: date,
-            category: item.category,
-            amount: item.amount,
-            weekNo: weekOfMonth,
-          };
-        } else if (expenseDay === 3) {
-          expenseProps = {
-            day: "wednesday",
-            expDate: date,
-            category: item.category,
-            amount: item.amount,
-            weekNo: weekOfMonth,
-          };
-        } else if (expenseDay === 4) {
-          expenseProps = {
-            day: "thursday",
-            expDate: date,
-            category: item.category,
-            amount: item.amount,
-            weekNo: weekOfMonth,
-          };
-        } else if (expenseDay === 5) {
-          expenseProps = {
-            day: "friday",
-            expDate: date,
-            category: item.category,
-            amount: item.amount,
-            weekNo: weekOfMonth,
-          };
-        } else if (expenseDay === 6) {
-          expenseProps = {
-            day: "saturday",
-            expDate: date,
-            category: item.category,
-            amount: item.amount,
-            weekNo: weekOfMonth,
-          };
-        }
+        let week = Math.ceil((expenseDate - 1 - expenseDay) / 7);
+        week <= 0 ? 1 : 0;
+        expenseProps = {
+          category: item.category,
+          amount: item.amount,
+          weekNum: week,
+          date: item.expensedate,
+        };
         expenseList.push(expenseProps);
       });
-      console.log(expenseList);
+
+      return expenseList;
     } catch (err) {
       console.log(err);
     }
+  }
+  async function summarizeExpenses(user) {
+    let expenseList = await getWeeklyExpenses(user);
+    let firstWeek = [];
+    let week1 = {};
+    let week2 = {};
+    let week3 = {};
+    let week4 = {};
+    expenseList.forEach((item) => {
+      if (item.weekNum === 1) {
+        if (!week1[item.category]) {
+          let category = item.category;
+          let amount = item.amount;
+          week1["category"] = category;
+          week1["amount"] = amount;
+        } else {
+          week1["amount"] += amount;
+        }
+        firstWeek.push(week1);
+      }
+      //  else if (item.weekNum === 2) {
+      //   if (!week2[item.category]) {
+      //     week2[item.category] = item.amount;
+      //   } else {
+      //     week2[item.category] += item.amount;
+      //   }
+      // } else if (item.weekNum === 3) {
+      //   if (!week3[item.category]) {
+      //     week3[item.category] = item.amount;
+      //   } else {
+      //     week3[item.category] += item.amount;
+      //   }
+      // } else if (item.weekNum === 4) {
+      //   if (!week4[item.category]) {
+      //     week4[item.category] = item.amount;
+      //   } else {
+      //     week4[item.category] += item.amount;
+      //   }
+      // }
+    });
+    console.log(firstWeek);
+    //return firstWeek;
+    // console.log(week2);
+    // console.log(week3);
+    // console.log(week4);
   }
   return {
     getCategories,
@@ -242,5 +238,7 @@ export default function ExpensesData(db) {
     calcTotals,
     checkName,
     getWeeklyExpenses,
+    summarizeExpenses,
+    checkCode,
   };
 }

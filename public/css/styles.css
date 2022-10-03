@@ -21,7 +21,11 @@ form {
   color: silver;
 }
 .register {
-  height: 400px;
+  height: 460px;
+}
+.code {
+  text-align: center;
+  color: silver;
 }
 .name {
   height: 30px;
