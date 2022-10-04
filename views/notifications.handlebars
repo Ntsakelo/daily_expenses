@@ -10,13 +10,14 @@
           <a href="/logout" class="nextLink"><button
             class="navButton"
           >Log out</button></a>
-          <a href="/notifications"><i class="fa-solid fa-bell"><span class="count">0</span></i></a>
+          <a href="/notifications"><i class="fa-solid fa-bell"><span class="count">{{count}}</span></i></a>
 
       </div>
+    {{#each myMessages}}
   <div class="notification">
-    <p class="notifDate">20/09/2022</p>
+    <p class="notifDate">{{this.date}}</p>
     <hr />
-    <p class="txtMsg">Hello Ntsakelo, You haven't added any expense for the past
-      day</p>
+    <p class="txtMsg">{{this.message}}</p>
   </div>
+  {{/each}}
 </div>

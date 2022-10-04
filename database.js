@@ -132,7 +132,7 @@ export default function ExpensesData(db) {
       }
       let currentDate = new Date();
       let newDate = new Date();
-      newDate.setDate(newDate.getDate() - numOfDays);
+      newDate.setDate(newDate.getDate() - numOfDays - 1);
       let userId = await getUserId(user);
       let results = await db.manyOrNone(
         "select categoryid,category, SUM(amount) from expenses join categories on categories.id = expenses.categoryid where userid = $1 and expensedate between $2 and $3 group by categoryid,category;",
@@ -151,15 +151,15 @@ export default function ExpensesData(db) {
       let lowerDate = new Date();
       lowerDate.setDate(lowerDate.getDate() - 29);
       let currentMonth = upperDate.getMonth() + 1;
-
-      // let results = await db.manyOrNone(
-      //   "select userid,category,expensedate,amount from expenses join categories on expenses.categoryid = categories.id join users on expenses.userid = users.id where users.id = $1 and expensedate between $2 and $3 and extract(MONTH from expensedate) = $4",
-      //   [userId, lowerDate, upperDate, currentMonth]
-      // );
+      upperDate.setDate(upperDate.getDate() + 30);
       let results = await db.manyOrNone(
-        "select userid,category,expensedate,amount from expenses join categories on expenses.categoryid = categories.id join users on expenses.userid = users.id where users.id = $1 and expensedate between $2 and $3 ",
-        [userId, lowerDate, upperDate]
+        "select userid,category,expensedate,amount from expenses join categories on expenses.categoryid = categories.id join users on expenses.userid = users.id where users.id = $1 and expensedate between $2 and $3 and extract(MONTH from expensedate) = $4",
+        [userId, lowerDate, upperDate, currentMonth]
       );
+      // let results = await db.manyOrNone(
+      //   "select userid,category,expensedate,amount from expenses join categories on expenses.categoryid = categories.id join users on expenses.userid = users.id where users.id = $1 and expensedate between $2 and $3 ",
+      //   [userId, lowerDate, upperDate]
+      // );
 
       let expenseProps = {};
       let expenseList = [];
@@ -229,8 +229,57 @@ export default function ExpensesData(db) {
         WeekData.push(weeklyData);
         weeklyData = {};
       }
-
       return WeekData;
+    } catch (err) {
+      console.log(err);
+    }
+  }
+  async function notify(user) {
+    try {
+      //notification for not
+      let messages = [];
+      let userId = await getUserId(user);
+      let currentDate = new Date();
+      let previousDate = new Date();
+      previousDate.setDate(previousDate.getDate() - 1);
+      let results = await db.manyOrNone(
+        "select userid,expensedate from expenses where userid = $1",
+        [userId]
+      );
+
+      console.log("currentDay: " + currentDate.toISOString());
+      let count = 0;
+      results.forEach((item) => {
+        if (
+          item.expensedate.toLocaleDateString() ===
+          previousDate.toLocaleDateString()
+        ) {
+          count++;
+        }
+      });
+
+      if (count === 0) {
+        messages.push({
+          date: currentDate.toLocaleDateString(),
+          message: `Hi ${user}, You have not entered the expenses from yesterday`,
+        });
+      } else {
+        if (messages.length > 0) {
+          for (let i = 0; i < messages.length; i++) {
+            if (
+              messages[i].date == currentDate.toLocaleDateString() &&
+              messages[i].message ==
+                `Hi ${user}, You have not entered the expenses from yesterday`
+            ) {
+              console.log("true");
+              messages.splice(i, 1);
+            }
+          }
+        }
+        count = 0;
+      }
+      console.log(messages);
+      return messages;
     } catch (err) {
       console.log(err);
     }
@@ -246,5 +295,6 @@ export default function ExpensesData(db) {
     getWeeklyExpenses,
     summarizeExpenses,
     checkCode,
+    notify,
   };
 }

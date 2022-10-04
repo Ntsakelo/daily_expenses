@@ -4,7 +4,7 @@ let uid = new ShortUniqueId({ length: 5 });
 export default function ExpensesRoutes(ExpensesData) {
   let userCode = "";
   let num = 0;
-
+  let messages = [];
   let daysArr = [];
   async function home(req, res, next) {
     try {
@@ -16,9 +16,11 @@ export default function ExpensesRoutes(ExpensesData) {
   }
   async function expenses(req, res, next) {
     try {
+      messages = await ExpensesData.notify(req.session.user.firstname);
       res.render("expense", {
         name: req.session.user.firstname,
         catList: await ExpensesData.getCategories(),
+        count: messages.length,
       });
     } catch (err) {
       next(err);
@@ -113,9 +115,11 @@ export default function ExpensesRoutes(ExpensesData) {
   async function viewAllExpenses(req, res, next) {
     try {
       let username = req.session.user.firstname;
+
       res.render("overallView", {
         name: username,
         allExpenses: await ExpensesData.getAllExpenses(username),
+        count: messages.length,
       });
     } catch (err) {
       next(err);
@@ -146,6 +150,7 @@ export default function ExpensesRoutes(ExpensesData) {
         filterNum: num,
         totalList: totals,
         days: daysArr,
+        count: messages.length,
       });
     } catch (err) {
       next(err);
@@ -158,6 +163,7 @@ export default function ExpensesRoutes(ExpensesData) {
       res.render("weekly", {
         name: username,
         weeklyData: await ExpensesData.summarizeExpenses(username),
+        count: messages.length,
       });
     } catch (err) {
       next(err);
@@ -166,6 +172,7 @@ export default function ExpensesRoutes(ExpensesData) {
   async function logOut(req, res, next) {
     try {
       delete req.session.user;
+      // messages = [];
       res.redirect("/");
     } catch (err) {
       next(err);
@@ -175,6 +182,8 @@ export default function ExpensesRoutes(ExpensesData) {
     try {
       res.render("notifications", {
         name: req.session.user.firstname,
+        count: messages.length,
+        myMessages: messages,
       });
     } catch (err) {
       next(err);
