@@ -154,9 +154,10 @@ export default function ExpensesRoutes(ExpensesData) {
   async function viewWeeklyExpenses(req, res, next) {
     try {
       let username = req.session.user.firstname;
-      await ExpensesData.summarizeExpenses(username);
+
       res.render("weekly", {
-        week1: await ExpensesData.summarizeExpenses(username),
+        name: username,
+        weeklyData: await ExpensesData.summarizeExpenses(username),
       });
     } catch (err) {
       next(err);
@@ -166,6 +167,15 @@ export default function ExpensesRoutes(ExpensesData) {
     try {
       delete req.session.user;
       res.redirect("/");
+    } catch (err) {
+      next(err);
+    }
+  }
+  async function notifications(req, res, next) {
+    try {
+      res.render("notifications", {
+        name: req.session.user.firstname,
+      });
     } catch (err) {
       next(err);
     }
@@ -183,5 +193,6 @@ export default function ExpensesRoutes(ExpensesData) {
     registerUser,
     viewWeeklyExpenses,
     logOut,
+    notifications,
   };
 }

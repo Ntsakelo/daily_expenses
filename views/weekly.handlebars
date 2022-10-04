@@ -1,16 +1,58 @@
 <div class="addExpenses">
   <div class="table">
     <table class="weeklyExpenses">
+      <div class="navigation">
+        <a href="/addExpenses/{{name}}" class="nextLink"><button
+            class="navButton first"
+          >Add</button></a>
+        <a href="/allExpenses" class="nextLink"><button
+            class="navButton"
+          >Expenses</button></a>
+        <a href="/logout" class="nextLink"><button class="navButton">Log out</button></a>
+        <a href="/notifications"><i class="fa-solid fa-bell"><span
+              class="count"
+            >0</span></i></a>
+
+      </div>
       <th>week 1</th>
       <th>week 2</th>
       <th>week 3</th>
       <th>week 4</th>
-      {{#each week1}}
-        <tr>
-          <td>{{this.Food}}</td>
+      <tr>
+        <td>
+          {{#each weeklyData}}
+            {{#each week1}}
+              <li>{{this.category}} R{{this.amount}}</li>
+            {{/each}}
+          {{/each}}
 
-        </tr>
-      {{/each}}
+        </td>
+        <td>
+          {{#each weeklyData}}
+            {{#each week2}}
+              <li>{{this.category}} R{{this.amount}}</li>
+            {{/each}}
+          {{/each}}
+
+        </td>
+        <td>
+          {{#each weeklyData}}
+            {{#each week3}}
+              <li>{{this.category}} R{{this.amount}}</li>
+            {{/each}}
+          {{/each}}
+
+        </td>
+        <td>
+          {{#each weeklyData}}
+            {{#each week4}}
+              <li>{{this.category}} R{{this.amount}}</li>
+            {{/each}}
+          {{/each}}
+
+        </td>
+      </tr>
+
     </table>
   </div>
 </div>

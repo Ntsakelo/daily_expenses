@@ -114,7 +114,7 @@ export default function ExpensesData(db) {
       }
       let upperDate = new Date();
       let lowerDate = new Date();
-      lowerDate.setDate(lowerDate.getDay() - numOfDays);
+      lowerDate.setDate(lowerDate.getDay() - numOfDays + 1);
       let results = await db.manyOrNone(
         "select firstname,category,amount,expensedate from users join expenses on users.id = expenses.userid join categories on categories.id = expenses.categoryid where expenses.userid = $1 and expensedate between $2 and $3",
         [userId, lowerDate, upperDate]
@@ -152,14 +152,14 @@ export default function ExpensesData(db) {
       lowerDate.setDate(lowerDate.getDate() - 29);
       let currentMonth = upperDate.getMonth() + 1;
 
-      let results = await db.manyOrNone(
-        "select userid,category,expensedate,amount from expenses join categories on expenses.categoryid = categories.id join users on expenses.userid = users.id where users.id = $1 and expensedate between $2 and $3 and extract(MONTH from expensedate) = $4",
-        [userId, lowerDate, upperDate, currentMonth]
-      );
       // let results = await db.manyOrNone(
-      //   "select userid,category,expensedate,amount from expenses join categories on expenses.categoryid = categories.id join users on expenses.userid = users.id where users.id = $1 and expensedate between $2 and $3 ",
-      //   [userId, lowerDate, upperDate]
+      //   "select userid,category,expensedate,amount from expenses join categories on expenses.categoryid = categories.id join users on expenses.userid = users.id where users.id = $1 and expensedate between $2 and $3 and extract(MONTH from expensedate) = $4",
+      //   [userId, lowerDate, upperDate, currentMonth]
       // );
+      let results = await db.manyOrNone(
+        "select userid,category,expensedate,amount from expenses join categories on expenses.categoryid = categories.id join users on expenses.userid = users.id where users.id = $1 and expensedate between $2 and $3 ",
+        [userId, lowerDate, upperDate]
+      );
 
       let expenseProps = {};
       let expenseList = [];
@@ -169,7 +169,9 @@ export default function ExpensesData(db) {
         let expenseDay = date.getDay();
         let expenseDate = date.getDate();
         let week = Math.ceil((expenseDate - 1 - expenseDay) / 7);
-        week <= 0 ? 1 : 0;
+        if (week <= 0) {
+          week = 1;
+        }
         expenseProps = {
           category: item.category,
           amount: item.amount,
@@ -184,50 +186,54 @@ export default function ExpensesData(db) {
       console.log(err);
     }
   }
+
   async function summarizeExpenses(user) {
-    let expenseList = await getWeeklyExpenses(user);
-    let firstWeek = [];
-    let week1 = {};
-    let week2 = {};
-    let week3 = {};
-    let week4 = {};
-    expenseList.forEach((item) => {
-      if (item.weekNum === 1) {
-        if (!week1[item.category]) {
-          let category = item.category;
-          let amount = item.amount;
-          week1["category"] = category;
-          week1["amount"] = amount;
-        } else {
-          week1["amount"] += amount;
+    try {
+      let expenseList = await getWeeklyExpenses(user);
+      console.log(expenseList);
+      let WeekData = [];
+      let weeklyData = {};
+      let week1 = [];
+      let week2 = [];
+      let week3 = [];
+      let week4 = [];
+
+      expenseList.forEach((item) => {
+        if (item.weekNum === 1) {
+          week1.push(item);
+        } else if (item.weekNum === 2) {
+          week2.push(item);
+        } else if (item.weekNum === 3) {
+          week3.push(item);
+        } else if (item.weekNum === 4) {
+          week4.push(item);
         }
-        firstWeek.push(week1);
+      });
+      if (weeklyData["week1"] === undefined) {
+        weeklyData["week1"] = week1;
+        WeekData.push(weeklyData);
+        weeklyData = {};
       }
-      //  else if (item.weekNum === 2) {
-      //   if (!week2[item.category]) {
-      //     week2[item.category] = item.amount;
-      //   } else {
-      //     week2[item.category] += item.amount;
-      //   }
-      // } else if (item.weekNum === 3) {
-      //   if (!week3[item.category]) {
-      //     week3[item.category] = item.amount;
-      //   } else {
-      //     week3[item.category] += item.amount;
-      //   }
-      // } else if (item.weekNum === 4) {
-      //   if (!week4[item.category]) {
-      //     week4[item.category] = item.amount;
-      //   } else {
-      //     week4[item.category] += item.amount;
-      //   }
-      // }
-    });
-    console.log(firstWeek);
-    //return firstWeek;
-    // console.log(week2);
-    // console.log(week3);
-    // console.log(week4);
+      if (weeklyData["week2"] === undefined) {
+        weeklyData["week2"] = week2;
+        WeekData.push(weeklyData);
+        weeklyData = {};
+      }
+      if (weeklyData["week3"] === undefined) {
+        weeklyData["week3"] = week3;
+        WeekData.push(weeklyData);
+        weeklyData = {};
+      }
+      if (weeklyData["week4"] === undefined) {
+        weeklyData["week4"] = week4;
+        WeekData.push(weeklyData);
+        weeklyData = {};
+      }
+
+      return WeekData;
+    } catch (err) {
+      console.log(err);
+    }
   }
   return {
     getCategories,

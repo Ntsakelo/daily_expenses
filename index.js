@@ -69,6 +69,8 @@ app.get("/register", expensesRoutes.registerPage);
 app.post("/register", expensesRoutes.registerUser);
 app.get("/weeklyExpenses", expensesRoutes.viewWeeklyExpenses);
 app.get("/logout", expensesRoutes.logOut);
+app.get("/notifications", expensesRoutes.notifications);
+
 var PORT = process.env.PORT || 3045;
 
 app.listen(PORT, function () {
